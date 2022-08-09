@@ -5,5 +5,5 @@ const server = require("./api/server");
 const port = 9000;
 
 server.listen(port, () => {
-  console.log(`magic happens here at port ${port} and guess what ? it's listening! shhhh`);
+  console.log("magic happens here at port", port);
 });
