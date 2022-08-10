@@ -51,9 +51,28 @@ router.post("/", (req, res) => {
       });
 });
 
-// router.put("/:id", (req, res) => {});
+router.delete("/:id", (req, res) => {
+  Posts.findById(req.params.id)
+    .then((toBeRemovedPost) => {
+      if (!toBeRemovedPost) {
+        res.status(404).json({
+          message: "The post with the specified ID does not exist",
+        });
+      } else return toBeRemovedPost;
+    })
+    .then((removedPost) => {
+      Posts.remove(req.params.id).then(() => {
+        res.json(removedPost);
+      });
+    })
+    .catch(() => {
+      res.status(500).json({
+        message: "The post could not be removed",
+      });
+    });
+});
 
-// router.delete("/:id", (req, res) => {});
+// router.put("/:id", (req, res) => {});
 
 // router.verb("/", (req, res) => {});
 
