@@ -62,6 +62,7 @@ router.delete("/:id", (req, res) => {
     })
     .then((removedPost) => {
       Posts.remove(req.params.id).then(() => {
+        console.log(removedPost);
         res.json(removedPost);
       });
     })
@@ -72,9 +73,30 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-// router.put("/:id", (req, res) => {});
-
-// router.verb("/", (req, res) => {});
+router.put("/:id", (req, res) => {
+  if (!req.body.title || !req.body.contents) {
+    res.status(400).json({
+      message: "Please provide title and contents for the post",
+    });
+    return;
+  }
+  Posts.update(req.params.id, req.body)
+    .then((post) => {
+      if (!post) {
+        res.status(404).json({
+          message: "The post with the specified ID does not exist",
+        });
+      } else return Posts.findById(req.params.id);
+    })
+    .then((updatedPost) => {
+      res.json(updatedPost);
+    })
+    .catch(() => {
+      res.status(500).json({
+        message: "The post information could not be modified",
+      });
+    });
+});
 
 // router.verb("/", (req, res) => {});
 
