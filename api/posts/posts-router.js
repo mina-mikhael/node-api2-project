@@ -32,23 +32,31 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  Posts.insert(req.body)
-    .then((newPost) => {
-      if (!req.body.title || !req.body.contents) {
-        res.status(400).json({
-          message: "Please provide title and contents for the post",
-        });
-      } else {
-        Posts.findById(newPost.id).then((data) => {
-          res.status(201).json(data);
-        });
-      }
-    })
-    .catch(() => {
-      res.status(500).json({
-        message: "There was an error while saving the post to the database",
-      });
+  if (!req.body.title || !req.body.contents) {
+    res.status(400).json({
+      message: "Please provide title and contents for the post",
     });
+  } else
+    Posts.insert(req.body)
+      .then(({ id }) => {
+        return Posts.findById(id);
+      })
+      .then((newPost) => {
+        res.status(201).json(newPost);
+      })
+      .catch(() => {
+        res.status(500).json({
+          message: "There was an error while saving the post to the database",
+        });
+      });
 });
+
+// router.put("/:id", (req, res) => {});
+
+// router.delete("/:id", (req, res) => {});
+
+// router.verb("/", (req, res) => {});
+
+// router.verb("/", (req, res) => {});
 
 module.exports = router;
