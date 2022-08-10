@@ -98,6 +98,24 @@ router.put("/:id", (req, res) => {
     });
 });
 
-// router.verb("/", (req, res) => {});
+router.get("/:id/comments", (req, res) => {
+  Posts.findById(req.params.id)
+    .then((post) => {
+      if (!post) {
+        res.status(404).json({
+          message: "The post with the specified ID does not exist",
+        });
+        return;
+      } else return Posts.findPostComments(req.params.id);
+    })
+    .then((comments) => {
+      res.json(comments);
+    })
+    .catch(() => {
+      res.status(500).json({
+        message: "The comments information could not be retrieved",
+      });
+    });
+});
 
 module.exports = router;
